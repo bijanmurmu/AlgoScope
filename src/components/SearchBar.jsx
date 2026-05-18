@@ -110,6 +110,12 @@ const ALGORITHMS = [
       'dynamic programming',
     ],
   },
+  {
+    id: 'mooreVoting',
+    name: "Moore's Voting Algorithm",
+    category: 'Array Search',
+    route: '/moore-voting',
+  },
   // ADTs
   {
     id: 'stack',
