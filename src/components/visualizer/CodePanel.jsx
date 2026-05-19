@@ -50,27 +50,31 @@ const CodePanel = memo(function CodePanel({
   }
 
   const handleDownload = () => {
-    const extensions = { 
-      javascript: 'js', 
-      'c++': 'cpp', 
+    const extensions = {
+      javascript: 'js',
       cpp: 'cpp',
       c: 'c',
-      python: 'py', 
+      python: 'py',
       java: 'java',
       go: 'go',
-      rust: 'rs'
+      rust: 'rs',
     }
     const ext = extensions[language?.toLowerCase()] || 'txt'
-    
+
     const cleanTitle = title?.replace(/[^a-zA-Z0-9\s]/g, '') || 'algorithm'
     const words = cleanTitle.trim().split(/\s+/)
-    const algoName = words.length === 1 
-      ? words[0].toLowerCase() 
-      : words[0].toLowerCase() + words.slice(1).map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join('')
-    
+    const algoName =
+      words.length === 1
+        ? words[0].toLowerCase()
+        : words[0].toLowerCase() +
+          words
+            .slice(1)
+            .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+            .join('')
+
     const blob = new Blob([code], { type: 'text/plain' })
     const url = URL.createObjectURL(blob)
-    
+
     const link = document.createElement('a')
     link.href = url
     link.download = `${algoName || 'code'}.${ext}`
