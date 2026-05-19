@@ -105,7 +105,7 @@ export const Navbar = () => {
         return trimmed
       })
     }
-  }, [pathname])
+  }, [pathname, algorithmLinks])
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-slate-950/50 backdrop-blur supports-[backdrop-filter]:bg-slate-950/40 rounded-xl shadow-2xl">
