@@ -142,6 +142,21 @@ const ALGORITHMS = [
     category: 'General',
     route: '/about',
   },
+  // Backtracking
+  {
+    id: 'nqueens',
+    name: 'N-Queens (Backtracking)',
+    category: 'Backtracking',
+    route: '/backtracking?algo=nqueens',
+    keywords: ['backtracking', 'n queens', 'nqueens', 'recursion'],
+  },
+  {
+    id: 'sudoku',
+    name: 'Sudoku Solver (Backtracking)',
+    category: 'Backtracking',
+    route: '/backtracking?algo=sudoku',
+    keywords: ['backtracking', 'sudoku', 'recursion', 'constraint'],
+  },
   // Math Theory
   {
     id: 'mathTheory',
