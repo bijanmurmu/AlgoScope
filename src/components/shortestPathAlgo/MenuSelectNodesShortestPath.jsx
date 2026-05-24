@@ -23,18 +23,32 @@ export const MenuSelectNodesShortestPath = ({
   target,
   setSource,
   setTarget,
+  algorithm,
 }) => {
   const nodeOptions = Array.from({ length: 9 }, (_, i) => i + 1)
+
+  if (algorithm === 'kruskal') {
+    return (
+      <div className="space-y-4">
+        <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider pl-1">
+          Source &amp; Target
+        </h3>
+        <div className="bg-slate-950/40 border border-white/5 rounded-xl p-3 text-slate-400 text-xs text-center font-medium">
+          No source or target selection required for Kruskal's MST algorithm.
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-4">
       <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider pl-1">
-        Source &amp; Target
+        {algorithm === 'prim' ? 'Start Node' : 'Source & Target'}
       </h3>
       <div className="space-y-3">
         <div className="relative">
           <Tooltip
-            content="Choose the source node"
+            content={algorithm === 'prim' ? 'Choose the start node' : 'Choose the source node'}
             position="top"
             className="w-full"
           >
@@ -43,7 +57,7 @@ export const MenuSelectNodesShortestPath = ({
               onChange={(e) => setSource(e.target.value || null)}
               className="w-full bg-slate-800 text-white text-sm border border-slate-700 rounded-xl pl-4 pr-10 py-3 transition duration-300 focus:outline-none focus:border-cyan-500 hover:border-slate-500 shadow-sm appearance-none cursor-pointer"
             >
-              <option value="">Choose Source</option>
+              <option value="">{algorithm === 'prim' ? 'Choose Start Node' : 'Choose Source'}</option>
               {nodeOptions.map((n) => (
                 <option key={n} value={n}>
                   {n}
@@ -53,27 +67,29 @@ export const MenuSelectNodesShortestPath = ({
           </Tooltip>
           <ChevronIcon />
         </div>
-        <div className="relative">
-          <Tooltip
-            content="Choose the target node"
-            position="top"
-            className="w-full"
-          >
-            <select
-              value={target ?? ''}
-              onChange={(e) => setTarget(e.target.value || null)}
-              className="w-full bg-slate-800 text-white text-sm border border-slate-700 rounded-xl pl-4 pr-10 py-3 transition duration-300 focus:outline-none focus:border-cyan-500 hover:border-slate-500 shadow-sm appearance-none cursor-pointer"
+        {algorithm !== 'prim' && (
+          <div className="relative">
+            <Tooltip
+              content="Choose the target node"
+              position="top"
+              className="w-full"
             >
-              <option value="">Choose Target</option>
-              {nodeOptions.map((n) => (
-                <option key={n} value={n}>
-                  {n}
-                </option>
-              ))}
-            </select>
-          </Tooltip>
-          <ChevronIcon />
-        </div>
+              <select
+                value={target ?? ''}
+                onChange={(e) => setTarget(e.target.value || null)}
+                className="w-full bg-slate-800 text-white text-sm border border-slate-700 rounded-xl pl-4 pr-10 py-3 transition duration-300 focus:outline-none focus:border-cyan-500 hover:border-slate-500 shadow-sm appearance-none cursor-pointer"
+              >
+                <option value="">Choose Target</option>
+                {nodeOptions.map((n) => (
+                  <option key={n} value={n}>
+                    {n}
+                  </option>
+                ))}
+              </select>
+            </Tooltip>
+            <ChevronIcon />
+          </div>
+        )}
       </div>
     </div>
   )

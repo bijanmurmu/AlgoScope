@@ -7,7 +7,7 @@ export const MenuSetAlgoShortestPath = ({ algorithm, setAlgorithm }) => {
 
   useEffect(() => {
     const algoFromUrl = searchParams.get('algo')
-    const validAlgos = ['dijkstra', 'bellmanford', 'floydwarshall']
+    const validAlgos = ['dijkstra', 'bellmanford', 'floydwarshall', 'prim', 'kruskal']
     if (algoFromUrl && validAlgos.includes(algoFromUrl)) {
       setAlgorithm(algoFromUrl)
     }
@@ -43,6 +43,8 @@ export const MenuSetAlgoShortestPath = ({ algorithm, setAlgorithm }) => {
             <option value="dijkstra">Dijkstra</option>
             <option value="bellmanford">Bellman-Ford</option>
             <option value="floydwarshall">Floyd–Warshall</option>
+            <option value="prim">Prim's MST</option>
+            <option value="kruskal">Kruskal's MST</option>
           </select>
         </Tooltip>
         <svg

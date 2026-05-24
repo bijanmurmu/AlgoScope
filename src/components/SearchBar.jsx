@@ -85,6 +85,21 @@ const ALGORITHMS = [
     category: 'Shortest Path',
     route: '/spath?algo=floydwarshall',
   },
+  // MST
+  {
+    id: 'prim',
+    name: "Prim's Algorithm",
+    category: 'Minimum Spanning Tree',
+    route: '/spath?algo=prim',
+    keywords: ['prim', 'mst', 'minimum spanning tree', 'greedy'],
+  },
+  {
+    id: 'kruskal',
+    name: "Kruskal's Algorithm",
+    category: 'Minimum Spanning Tree',
+    route: '/spath?algo=kruskal',
+    keywords: ['kruskal', 'mst', 'minimum spanning tree', 'union find', 'disjoint set'],
+  },
   // Array Search
   {
     id: 'linear',

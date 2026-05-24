@@ -44,8 +44,14 @@ export const ShortestPathPage = () => {
   const handleRun = () => {
     if (!algorithm) return
 
-    if (viewMode === 'network' && (!source || !target)) {
-      return
+    if (viewMode === 'network') {
+      if (algorithm === 'kruskal') {
+        // Kruskal's needs no source/target
+      } else if (algorithm === 'prim') {
+        if (!source) return
+      } else {
+        if (!source || !target) return
+      }
     }
 
     setRunKey((prev) => (prev === null ? 0 : prev + 1))
@@ -59,7 +65,13 @@ export const ShortestPathPage = () => {
   }
 
   const canRun =
-    viewMode === 'grid' ? !!algorithm : !!algorithm && !!source && !!target
+    viewMode === 'grid'
+      ? !!algorithm
+      : algorithm === 'kruskal'
+      ? !!algorithm
+      : algorithm === 'prim'
+      ? !!algorithm && !!source
+      : !!algorithm && !!source && !!target
 
   const currentSource = useMemo(() => {
     if (!algorithm) return ''
@@ -80,10 +92,19 @@ export const ShortestPathPage = () => {
       dijkstra: "Dijkstra's",
       bellmanford: 'Bellman-Ford',
       floydwarshall: 'Floyd-Warshall',
+      prim: "Prim's MST",
+      kruskal: "Kruskal's MST",
     }
 
     return names[algo] || algo
   }
+
+  React.useEffect(() => {
+    if (algorithm === 'prim' || algorithm === 'kruskal') {
+      if (viewMode === 'grid') setViewMode('network')
+      if (mode === 'compare') setMode('solo')
+    }
+  }, [algorithm, viewMode, mode])
 
   return (
     <motion.div
@@ -120,9 +141,12 @@ export const ShortestPathPage = () => {
 
           <button
             onClick={() => setViewMode('grid')}
+            disabled={algorithm === 'prim' || algorithm === 'kruskal'}
             className={`w-1/2 py-2 rounded-lg text-xs font-bold transition-all ${
               viewMode === 'grid'
                 ? 'bg-cyan-600 text-white'
+                : algorithm === 'prim' || algorithm === 'kruskal'
+                ? 'bg-slate-800/40 text-slate-600 cursor-not-allowed border border-white/5'
                 : 'bg-slate-800 text-slate-400'
             }`}
           >
@@ -145,9 +169,12 @@ export const ShortestPathPage = () => {
 
             <button
               onClick={() => setMode('compare')}
+              disabled={algorithm === 'prim' || algorithm === 'kruskal'}
               className={`w-1/2 py-2 rounded-lg text-xs font-bold transition-all ${
                 mode === 'compare'
                   ? 'bg-cyan-600 text-white'
+                  : algorithm === 'prim' || algorithm === 'kruskal'
+                  ? 'bg-slate-800/40 text-slate-600 cursor-not-allowed border border-white/5'
                   : 'bg-slate-800 text-slate-400'
               }`}
             >
@@ -240,6 +267,7 @@ export const ShortestPathPage = () => {
             target={target}
             setSource={setSource}
             setTarget={setTarget}
+            algorithm={algorithm}
           />
         )}
 
