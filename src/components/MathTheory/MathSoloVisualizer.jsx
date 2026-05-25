@@ -80,15 +80,25 @@ export const MathSoloVisualizer = () => {
   const handleVisualize = () => {
     clear()
     if (algo === 'gcd') {
-      loadSteps(generateEuclideanGCDSteps(Number(gcdA), Number(gcdB)), { autoPlay: !isStepMode })
+      loadSteps(generateEuclideanGCDSteps(Number(gcdA), Number(gcdB)), {
+        autoPlay: !isStepMode,
+      })
     } else if (algo === 'expo') {
-      loadSteps(generateFastExpoSteps(Number(expoBase), Number(expoExp)), { autoPlay: !isStepMode })
+      loadSteps(generateFastExpoSteps(Number(expoBase), Number(expoExp)), {
+        autoPlay: !isStepMode,
+      })
     } else if (algo === 'sieve') {
-      loadSteps(generateSieveSteps(Number(sieveLimit)), { autoPlay: !isStepMode })
+      loadSteps(generateSieveSteps(Number(sieveLimit)), {
+        autoPlay: !isStepMode,
+      })
     } else if (algo === 'fibonacci') {
-      loadSteps(generateFibonacciSteps(Number(fibLimit)), { autoPlay: !isStepMode })
+      loadSteps(generateFibonacciSteps(Number(fibLimit)), {
+        autoPlay: !isStepMode,
+      })
     } else {
-      loadSteps(generateBitOpSteps(Number(bitA), Number(bitB), bitOp), { autoPlay: !isStepMode })
+      loadSteps(generateBitOpSteps(Number(bitA), Number(bitB), bitOp), {
+        autoPlay: !isStepMode,
+      })
     }
   }
 
@@ -387,15 +397,27 @@ export const MathSoloVisualizer = () => {
           </div>
         </div>
         <div className="flex rounded-xl overflow-hidden border border-slate-700 mb-2">
-          <button type="button" onClick={() => { setIsStepMode(false); clear() }}
-          className={`flex-1 py-2 text-xs font-semibold transition-all ${!isStepMode ? 'bg-cyan-600 text-white' : 'bg-slate-800 text-slate-400 hover:text-slate-200'}`}>
+          <button
+            type="button"
+            onClick={() => {
+              setIsStepMode(false)
+              clear()
+            }}
+            className={`flex-1 py-2 text-xs font-semibold transition-all ${!isStepMode ? 'bg-cyan-600 text-white' : 'bg-slate-800 text-slate-400 hover:text-slate-200'}`}
+          >
             Auto
-            </button>
-            <button type="button" onClick={() => { setIsStepMode(true); clear() }}
-            className={`flex-1 py-2 text-xs font-semibold transition-all ${isStepMode ? 'bg-cyan-600 text-white' : 'bg-slate-800 text-slate-400 hover:text-slate-200'}`}>
-              Step
-              </button>
-              </div>
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setIsStepMode(true)
+              clear()
+            }}
+            className={`flex-1 py-2 text-xs font-semibold transition-all ${isStepMode ? 'bg-cyan-600 text-white' : 'bg-slate-800 text-slate-400 hover:text-slate-200'}`}
+          >
+            Step
+          </button>
+        </div>
         {/* Playback buttons */}
         <div className="space-y-2">
           <Tooltip
