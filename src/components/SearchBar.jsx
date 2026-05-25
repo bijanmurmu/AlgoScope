@@ -85,6 +85,27 @@ const ALGORITHMS = [
     category: 'Shortest Path',
     route: '/spath?algo=floydwarshall',
   },
+  // MST
+  {
+    id: 'prim',
+    name: "Prim's Algorithm",
+    category: 'Minimum Spanning Tree',
+    route: '/spath?algo=prim',
+    keywords: ['prim', 'mst', 'minimum spanning tree', 'greedy'],
+  },
+  {
+    id: 'kruskal',
+    name: "Kruskal's Algorithm",
+    category: 'Minimum Spanning Tree',
+    route: '/spath?algo=kruskal',
+    keywords: [
+      'kruskal',
+      'mst',
+      'minimum spanning tree',
+      'union find',
+      'disjoint set',
+    ],
+  },
   // Array Search
   {
     id: 'linear',
@@ -109,6 +130,31 @@ const ALGORITHMS = [
       'max subarray',
       'dynamic programming',
     ],
+  },
+  {
+    id: 'stringAlgo',
+    name: 'String Algorithms',
+    category: 'String',
+    route: '/string-algorithms',
+  },
+
+  {
+    id: 'kmp',
+    name: 'KMP Algorithm (Knuth-Morris-Pratt)',
+    category: 'String',
+    route: '/string-algorithms?algo=kmp',
+  },
+  {
+    id: 'rabinkarp',
+    name: 'Rabin-Karp Algorithm',
+    category: 'String',
+    route: '/string-algorithms?algo=rabinkarp',
+  },
+  {
+    id: 'zalgorithm',
+    name: 'Z-Algorithm',
+    category: 'String',
+    route: '/string-algorithms?algo=zalgorithm',
   },
   {
     id: 'mooreVoting',
@@ -142,6 +188,22 @@ const ALGORITHMS = [
     category: 'General',
     route: '/about',
   },
+  // Backtracking
+  {
+    id: 'nqueens',
+    name: 'Backtracking',
+    category: 'Backtracking',
+    route: '/backtracking?algo=nqueens',
+    keywords: [
+      'backtracking',
+      'n queens',
+      'nqueens',
+      'sudoku',
+      'recursion',
+      'constraint',
+    ],
+  },
+
   // Math Theory
   {
     id: 'mathTheory',
@@ -156,6 +218,7 @@ const SearchBar = () => {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState([])
   const [selectedIndex, setSelectedIndex] = useState(0)
+  const [sortBy, setSortBy] = useState('relevance')
   const [isMac] = useState(() => {
     if (typeof window === 'undefined') return false
     const platform =
@@ -188,7 +251,17 @@ const SearchBar = () => {
     }
 
     const searchResults = fuse.search(val)
-    setResults(searchResults)
+
+    const sortedResults = [...searchResults].sort((a, b) => {
+      if (sortBy === 'name') {
+        return a.item.name.localeCompare(b.item.name)
+      } else if (sortBy === 'category') {
+        return a.item.category.localeCompare(b.item.category)
+      }
+      return 0
+    })
+
+    setResults(sortedResults)
     setSelectedIndex(0)
   }
 
@@ -324,9 +397,40 @@ const SearchBar = () => {
                   type="text"
                   value={query}
                   onChange={handleSearch}
-                  className="w-full bg-transparent text-slate-200 text-lg block pl-12 pr-12 py-2 outline-none"
+                  className="w-full bg-transparent text-slate-200 text-lg block pl-12 pr-24 py-2 outline-none"
                   placeholder="Search algorithms..."
                 />
+                {/* Sort Dropdown */}
+                {results.length > 0 && (
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                    <select
+                      value={sortBy}
+                      onChange={(e) => {
+                        setSortBy(e.target.value)
+                        const searchResults = fuse.search(query)
+                        const sortedResults = [...searchResults].sort(
+                          (a, b) => {
+                            if (e.target.value === 'name') {
+                              return a.item.name.localeCompare(b.item.name)
+                            } else if (e.target.value === 'category') {
+                              return a.item.category.localeCompare(
+                                b.item.category
+                              )
+                            }
+                            return 0
+                          }
+                        )
+                        setResults(sortedResults)
+                      }}
+                      className="bg-slate-800 border border-slate-600 text-slate-300 text-xs px-2 py-1 rounded-lg cursor-pointer outline-none"
+                      aria-label="Sort results"
+                    >
+                      <option value="relevance">Relevance</option>
+                      <option value="name">Name</option>
+                      <option value="category">Category</option>
+                    </select>
+                  </div>
+                )}
                 {/* Close Button */}
                 <button
                   onClick={handleCloseModal}

@@ -110,4 +110,87 @@ export const complexityMap = {
     worst: 'O(n²)',
     space: 'O(1)',
   },
+  nqueens: {
+    best: 'O(N!)',
+    average: 'O(N!)',
+    worst: 'O(N!)',
+    space: 'O(N²)',
+  },
+
+  sudoku: {
+    best: 'O(1)',
+    average: 'O(9^M)',
+    worst: 'O(9^M)',
+    space: 'O(M)',
+  },
+  hanoi: {
+    best: 'O(2^N)',
+    average: 'O(2^N)',
+    worst: 'O(2^N)',
+    space: 'O(N)',
+  },
+  gcd: {
+    best: 'O(log min(a, b))',
+    average: 'O(log min(a, b))',
+    worst: 'O(log min(a, b))',
+    space: 'O(1)',
+  },
+  fastexpo: {
+    best: 'O(log exp)',
+    average: 'O(log exp)',
+    worst: 'O(log exp)',
+    space: 'O(1)',
+  },
+  bitmanip: {
+    best: 'O(1)',
+    average: 'O(1)',
+    worst: 'O(1)',
+    space: 'O(1)',
+  },
+  sieve: {
+    best: 'O(N log log N)',
+    average: 'O(N log log N)',
+    worst: 'O(N log log N)',
+    space: 'O(N)',
+  },
+
+  prim: {
+    best: 'O((E + V) log E)',
+    average: 'O((E + V) log E)',
+    worst: 'O((E + V) log E)',
+    space: 'O(V)',
+  },
+
+  kruskal: {
+    best: 'O(E log E)',
+    average: 'O(E log E)',
+    worst: 'O(E log E)',
+    space: 'O(V + E)',
+  },
+  fibonacci: {
+    best: 'O(2^N)',
+    average: 'O(2^N)',
+    worst: 'O(2^N)',
+    space: 'O(N)',
+  },
+  kmp: {
+    best: 'O(n + m)',
+    average: 'O(n + m)',
+    worst: 'O(n + m)',
+    space: 'O(m)',
+  },
+
+  rabinkarp: {
+    best: 'O(n + m)',
+    average: 'O(n + m)',
+    worst: 'O(n * m)',
+    space: 'O(1)',
+  },
+
+  zalgorithm: {
+    best: 'O(n + m)',
+    average: 'O(n + m)',
+    worst: 'O(n + m)',
+    space: 'O(n + m)',
+  },
 }
