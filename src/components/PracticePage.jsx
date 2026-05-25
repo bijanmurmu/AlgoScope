@@ -73,9 +73,10 @@ const Terminal = React.forwardRef(function Terminal({ logs, onClear }, ref) {
 
 const runCodeInWorker = (userCode, inputVal) => {
   return new Promise((resolve) => {
-    const executionToken = typeof crypto !== 'undefined' && crypto.randomUUID 
-      ? crypto.randomUUID() 
-      : Math.random().toString(36).substring(2) + Date.now().toString(36);
+    const executionToken =
+      typeof crypto !== 'undefined' && crypto.randomUUID
+        ? crypto.randomUUID()
+        : Math.random().toString(36).substring(2) + Date.now().toString(36)
 
     const workerCode = `
       self.onmessage = function(e) {
@@ -186,7 +187,11 @@ const runCodeInWorker = (userCode, inputVal) => {
       })
     }
 
-    worker.postMessage({ code: userCode, input: inputVal, token: executionToken })
+    worker.postMessage({
+      code: userCode,
+      input: inputVal,
+      token: executionToken,
+    })
   })
 }
 
