@@ -221,6 +221,10 @@ func solve(board [][]rune, row, n int, results *[][]string) {
   hanoi: {
     javascript: {
       code: `function towerOfHanoi(n, source, auxiliary, destination) {
+  if (n <= 0) {
+    return;
+  }
+
   if (n === 1) {
     console.log(\`Move disk 1 from \${source} to \${destination}\`);
     return;
@@ -235,6 +239,9 @@ towerOfHanoi(4, 'A', 'B', 'C');`,
     },
     python: {
       code: `def tower_of_hanoi(n, source, auxiliary, destination):
+    if n <= 0:
+        return
+
     if n == 1:
         print(f"Move disk 1 from {source} to {destination}")
         return
@@ -250,6 +257,10 @@ tower_of_hanoi(4, 'A', 'B', 'C')`,
 using namespace std;
 
 void towerOfHanoi(int n, char source, char auxiliary, char destination) {
+    if (n <= 0) {
+        return;
+    }
+
     if (n == 1) {
         cout << "Move disk 1 from " << source << " to " << destination << endl;
         return;
@@ -267,6 +278,10 @@ int main() {
     java: {
       code: `public class TowerOfHanoi {
     static void solve(int n, char source, char auxiliary, char destination) {
+        if (n <= 0) {
+            return;
+        }
+
         if (n == 1) {
             System.out.println("Move disk 1 from " + source + " to " + destination);
             return;
@@ -286,6 +301,10 @@ int main() {
       code: `#include <stdio.h>
 
 void towerOfHanoi(int n, char source, char auxiliary, char destination) {
+    if (n <= 0) {
+        return;
+    }
+
     if (n == 1) {
         printf("Move disk 1 from %c to %c\\n", source, destination);
         return;
@@ -303,6 +322,10 @@ int main() {
     },
     rust: {
       code: `fn tower_of_hanoi(n: u32, source: char, auxiliary: char, destination: char) {
+    if n == 0 {
+        return;
+    }
+
     if n == 1 {
         println!("Move disk 1 from {} to {}", source, destination);
         return;
@@ -323,6 +346,10 @@ fn main() {
 import "fmt"
 
 func towerOfHanoi(n int, source, auxiliary, destination string) {
+    if n <= 0 {
+        return
+    }
+
     if n == 1 {
         fmt.Printf("Move disk 1 from %s to %s\\n", source, destination)
         return

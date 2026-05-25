@@ -70,20 +70,13 @@ export const CanvasTowerOfHanoi = ({
   trigger = 0,
 }) => {
   const [frame, setFrame] = useState(null)
-  const [done, setDone] = useState(false)
-  const [prevTrigger, setPrevTrigger] = useState(trigger)
+  const [doneTrigger, setDoneTrigger] = useState(null)
   const timerRef = useRef(null)
 
   const frames = useMemo(() => {
     if (trigger === 0) return []
     return generateHanoiFrames(diskCount)
   }, [trigger, diskCount])
-
-  if (trigger !== prevTrigger) {
-    setPrevTrigger(trigger)
-    setFrame(null)
-    setDone(false)
-  }
 
   useEffect(() => {
     clearTimeout(timerRef.current)
@@ -96,9 +89,9 @@ export const CanvasTowerOfHanoi = ({
       if (index >= frames.length) return
 
       timerRef.current = setTimeout(() => {
-        setFrame(frames[index])
+        setFrame({ ...frames[index], trigger })
         if (index === frames.length - 1) {
-          setDone(true)
+          setDoneTrigger(trigger)
         } else {
           scheduleNext(index + 1)
         }
@@ -110,30 +103,32 @@ export const CanvasTowerOfHanoi = ({
     return () => clearTimeout(timerRef.current)
   }, [trigger, speed, frames])
 
-  const displayRods = frame?.rods ?? {
+  const activeFrame = frame?.trigger === trigger ? frame : null
+  const done = doneTrigger === trigger && trigger !== 0
+  const displayRods = activeFrame?.rods ?? {
     A: Array.from({ length: diskCount }, (_, index) => diskCount - index),
     B: [],
     C: [],
   }
   const totalMoves = 2 ** diskCount - 1
-  const currentMove = Math.min(frame?.moveNumber ?? 0, totalMoves)
+  const currentMove = Math.min(activeFrame?.moveNumber ?? 0, totalMoves)
   const status =
-    frame?.message ??
+    activeFrame?.message ??
     'Choose disk count and click Visualize to watch the recursive moves.'
 
   const diskClass = (rodKey, disk) => {
     if (
-      frame?.type === 'move' &&
-      frame?.to === rodKey &&
-      frame?.disk === disk
+      activeFrame?.type === 'move' &&
+      activeFrame?.to === rodKey &&
+      activeFrame?.disk === disk
     ) {
       return 'bg-cyan-400 text-slate-950 shadow-[0_0_18px_rgba(34,211,238,0.55)]'
     }
 
     if (
-      frame?.type === 'move' &&
-      frame?.from === rodKey &&
-      frame?.disk === disk
+      activeFrame?.type === 'move' &&
+      activeFrame?.from === rodKey &&
+      activeFrame?.disk === disk
     ) {
       return 'bg-orange-400 text-slate-950'
     }
@@ -147,11 +142,11 @@ export const CanvasTowerOfHanoi = ({
         <div className="grid w-full max-w-4xl grid-cols-1 gap-5 sm:grid-cols-3">
           {RODS.map((rodKey) => {
             const isActive =
-              frame?.from === rodKey ||
-              frame?.to === rodKey ||
-              frame?.source === rodKey ||
-              frame?.destination === rodKey ||
-              frame?.auxiliary === rodKey
+              activeFrame?.from === rodKey ||
+              activeFrame?.to === rodKey ||
+              activeFrame?.source === rodKey ||
+              activeFrame?.destination === rodKey ||
+              activeFrame?.auxiliary === rodKey
 
             return (
               <div
@@ -213,17 +208,17 @@ export const CanvasTowerOfHanoi = ({
           <div className="rounded-xl bg-slate-800/60 p-4 border border-slate-700 text-center">
             <p className="text-slate-400 text-xs">Recursive N</p>
             <h2 className="text-2xl font-bold text-orange-400 mt-1">
-              {frame?.activeN ?? '-'}
+              {activeFrame?.activeN ?? '-'}
             </h2>
           </div>
         </div>
 
-        {frame?.type === 'call' && (
+        {activeFrame?.type === 'call' && (
           <div className="w-full max-w-xl rounded-xl border border-cyan-500/30 bg-cyan-500/10 px-4 py-3 text-sm text-cyan-100">
             <span className="font-bold text-cyan-300">Call depth:</span>{' '}
-            {frame.depth} | move {frame.activeN} disk
-            {frame.activeN === 1 ? '' : 's'} from {frame.source} to{' '}
-            {frame.destination} using {frame.auxiliary}.
+            {activeFrame.depth} | move {activeFrame.activeN} disk
+            {activeFrame.activeN === 1 ? '' : 's'} from {activeFrame.source} to{' '}
+            {activeFrame.destination} using {activeFrame.auxiliary}.
           </div>
         )}
 
