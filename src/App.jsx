@@ -59,6 +59,7 @@ const DPVisualizerPage = lazy(
 const PracticePage = lazy(() => import('./components/PracticePage'))
 const AboutAlgoScope = lazy(() => import('./components/about/About'))
 const NotFound = lazy(() => import('./components/PageNotFound'))
+const ChallengePage = lazy(() => import('./components/challenge/ChallengePage'))
 
 // Simple fallback for Suspense
 const PageLoader = () => (
@@ -210,6 +211,16 @@ function App() {
         <Suspense fallback={<PageLoader />}>
           <AppLayout>
             <DPVisualizerPage  />
+          </AppLayout>
+        </Suspense>
+      ),
+    },
+    {
+      path: '/challenge',
+      element: (
+        <Suspense fallback={<PageLoader />}>
+          <AppLayout>
+            <ChallengePage />
           </AppLayout>
         </Suspense>
       ),

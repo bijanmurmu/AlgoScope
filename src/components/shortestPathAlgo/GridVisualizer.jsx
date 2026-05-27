@@ -23,7 +23,7 @@ const LEGEND_ITEMS = [
 ]
 
 const getCellClassName = (node) => {
-  return `w-7 h-7 border border-slate-800 flex items-center justify-center text-[11px] text-white ${
+  return `w-7 h-7 border border-(--theme-border) flex items-center justify-center text-[11px] text-(--theme-text-strong) ${
     node.isStart
       ? 'bg-green-500'
       : node.isEnd
@@ -40,7 +40,7 @@ const getCellClassName = (node) => {
               ? 'bg-yellow-400'
               : node.visited
                 ? 'bg-cyan-500'
-                : 'bg-[#0f172a]'
+                : 'bg-(--theme-surface)'
   }`
 }
 
@@ -373,14 +373,14 @@ const GridVisualizer = ({ algorithm, runKey, speed }) => {
   }, [runKey, algorithm, animate])
 
   return (
-    <div className="w-full bg-[#020617] p-4 rounded-xl">
+    <div className="w-full bg-(--theme-surface-muted) border border-(--theme-border) p-4 rounded-xl">
       <div className="flex flex-wrap gap-3 mb-5">
         {DRAW_MODES.map((mode) => (
           <button
             key={mode}
             aria-label={`${mode.charAt(0).toUpperCase() + mode.slice(1)} Mode`}
             onClick={() => setDrawMode(mode)}
-            className={`px-4 py-2 rounded-lg text-white font-semibold text-sm ${drawMode === mode ? 'bg-cyan-600' : 'bg-slate-800'}`}
+            className={`px-4 py-2 rounded-lg text-(--theme-text-strong) font-semibold text-sm ${drawMode === mode ? 'bg-cyan-600' : 'bg-(--theme-surface-strong)'}`}
           >
             {mode.toUpperCase()} Mode
           </button>
@@ -389,21 +389,21 @@ const GridVisualizer = ({ algorithm, runKey, speed }) => {
           aria-label="Generate Maze"
           onClick={generateMaze}
           disabled={running}
-          className="px-4 py-2 bg-slate-800 rounded-lg text-white font-semibold text-sm"
+          className="px-4 py-2 bg-[var(--theme-surface-strong)] rounded-lg text-(--theme-text-strong) font-semibold text-sm"
         >
           Generate Maze
         </button>
         <button
           aria-label="Clear Grid"
           onClick={clearGrid}
-          className="px-4 py-2 bg-slate-800 rounded-lg text-white font-semibold text-sm"
+          className="px-4 py-2 bg-[var(--theme-surface-strong)] rounded-lg text-(--theme-text-strong) font-semibold text-sm"
         >
           Clear Grid
         </button>
         <button
           aria-label="Clear Path"
           onClick={clearPath}
-          className="px-4 py-2 bg-slate-800 rounded-lg text-white font-semibold text-sm"
+          className="px-4 py-2 bg-[var(--theme-surface-strong)] rounded-lg text-(--theme-text-strong) font-semibold text-sm"
         >
           Clear Path
         </button>
@@ -411,9 +411,9 @@ const GridVisualizer = ({ algorithm, runKey, speed }) => {
 
       <div className="flex gap-6">
         <div className="w-64 space-y-4">
-          <div className="bg-slate-800 p-4 rounded-lg text-white text-sm">
+          <div className="bg-(--theme-surface) border border-(--theme-border) p-4 rounded-lg text-(--theme-text-strong) text-sm">
             <h3 className="font-bold mb-2">HOW TO USE</h3>
-            <ol className="text-slate-400 text-xs list-decimal pl-4 space-y-1">
+            <ol className="text-(--theme-text-muted) text-xs list-decimal pl-4 space-y-1">
               <li>Pick a shortest path algorithm.</li>
               <li>Select a grid tool: Wall, Weight, or Erase.</li>
               <li>
@@ -425,9 +425,9 @@ const GridVisualizer = ({ algorithm, runKey, speed }) => {
               </li>
             </ol>
           </div>
-          <div className="bg-slate-800 p-4 rounded-lg text-white text-sm">
+          <div className="bg-(--theme-surface) border border-(--theme-border) p-4 rounded-lg text-(--theme-text-strong) text-sm">
             <h3 className="font-bold mb-2">GRID TOOLS</h3>
-            <ul className="space-y-3 text-xs text-slate-400">
+            <ul className="space-y-3 text-xs text-(--theme-text-muted)">
               <li>
                 🧱 <b>Wall Mode</b>
                 <br />
@@ -452,7 +452,7 @@ const GridVisualizer = ({ algorithm, runKey, speed }) => {
         </div>
 
         <div
-          className="inline-block border border-slate-700 overflow-hidden rounded-lg"
+          className="inline-block border border-(--theme-border-strong) overflow-hidden rounded-lg"
           onMouseLeave={() => setMousePressed(false)}
         >
           {grid.map((row, r) => (
@@ -479,15 +479,15 @@ const GridVisualizer = ({ algorithm, runKey, speed }) => {
       </div>
 
       <div className="flex gap-4 mt-5">
-        <div className="bg-slate-800 px-4 py-2 rounded-lg text-slate-200 text-sm">
+        <div className="bg-(--theme-surface) border border-(--theme-border) px-4 py-2 rounded-lg text-(--theme-text) text-sm">
           Visited Nodes: {visitedCount}
         </div>
-        <div className="bg-slate-800 px-4 py-2 rounded-lg text-slate-200 text-sm">
+        <div className="bg-(--theme-surface) border border-(--theme-border) px-4 py-2 rounded-lg text-(--theme-text) text-sm">
           Path Cost: {pathCost}
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-4 mt-5 text-xs text-slate-400">
+      <div className="flex flex-wrap gap-4 mt-5 text-xs text-(--theme-text-muted)">
         {LEGEND_ITEMS.map((i) => (
           <div key={i.l} className="flex items-center gap-1">
             <div className={`w-3 h-3 ${i.c}`} />
