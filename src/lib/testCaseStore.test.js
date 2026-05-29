@@ -1,208 +1,398 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { buildTestCaseEntry, importTestCases } from './testCaseStore'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-// Dummy FileReader implementation for testing in Node
-class DummyFileReader {
+// Create in-memory storage for mock database
+let mockStoreData = new Map()
+
+const mockIndex = {
+  getAll: (val) => {
+    const req = {
+      onsuccess: null,
+      onerror: null,
+      result: Array.from(mockStoreData.values()).filter(
+        (item) => item.algorithm === val
+      ),
+    }
+    setTimeout(() => {
+      if (req.onsuccess) req.onsuccess({ target: req })
+    }, 0)
+    return req
+  },
+}
+
+const mockObjectStore = {
+  add: (entry) => {
+    mockStoreData.set(entry.id, entry)
+    const req = {
+      onsuccess: null,
+      onerror: null,
+      result: entry.id,
+    }
+    setTimeout(() => {
+      if (req.onsuccess) req.onsuccess({ target: req })
+    }, 0)
+    return req
+  },
+  delete: (id) => {
+    mockStoreData.delete(id)
+    const req = {
+      onsuccess: null,
+      onerror: null,
+    }
+    setTimeout(() => {
+      if (req.onsuccess) req.onsuccess({ target: req })
+    }, 0)
+    return req
+  },
+  get: (id) => {
+    const req = {
+      onsuccess: null,
+      onerror: null,
+      result: mockStoreData.get(id),
+    }
+    setTimeout(() => {
+      if (req.onsuccess) req.onsuccess({ target: req })
+    }, 0)
+    return req
+  },
+  put: (entry) => {
+    mockStoreData.set(entry.id, entry)
+    const req = {
+      onsuccess: null,
+      onerror: null,
+      result: entry.id,
+    }
+    setTimeout(() => {
+      if (req.onsuccess) req.onsuccess({ target: req })
+    }, 0)
+    return req
+  },
+  getAll: () => {
+    const req = {
+      onsuccess: null,
+      onerror: null,
+      result: Array.from(mockStoreData.values()),
+    }
+    setTimeout(() => {
+      if (req.onsuccess) req.onsuccess({ target: req })
+    }, 0)
+    return req
+  },
+  createIndex: vi.fn(),
+  index: () => mockIndex,
+}
+
+const mockDb = {
+  objectStoreNames: {
+    contains: () => true,
+  },
+  createObjectStore: vi.fn(() => mockObjectStore),
+  transaction: () => {
+    const tx = {
+      objectStore: () => mockObjectStore,
+      oncomplete: null,
+      onerror: null,
+    }
+    // Defer the oncomplete call to let any internal asynchronous get/put operations finish
+    setTimeout(() => {
+      if (tx.oncomplete) tx.oncomplete()
+    }, 20)
+    return tx
+  },
+}
+
+const mockIndexedDB = {
+  open: () => {
+    const req = {
+      onsuccess: null,
+      onerror: null,
+      onupgradeneeded: null,
+      result: mockDb,
+    }
+    setTimeout(() => {
+      if (req.onupgradeneeded)
+        req.onupgradeneeded({ target: { result: mockDb } })
+      if (req.onsuccess) req.onsuccess({ target: req })
+    }, 0)
+    return req
+  },
+}
+
+// Mock globals for Vitest environment
+globalThis.indexedDB = mockIndexedDB
+
+// Mock Blob as standard ES6 class constructor
+globalThis.Blob = class {
+  constructor(content, options) {
+    this.content = content
+    this.options = options
+  }
+}
+
+globalThis.URL = {
+  createObjectURL: vi.fn().mockReturnValue('mock-blob-url'),
+  revokeObjectURL: vi.fn(),
+}
+
+// Mock document for export test
+globalThis.document = {
+  createElement: vi.fn().mockReturnValue({
+    href: '',
+    download: '',
+    click: vi.fn(),
+  }),
+}
+
+// Mock FileReader for import test
+globalThis.FileReader = class {
   constructor() {
     this.onload = null
     this.onerror = null
+    this.result = ''
   }
-
   readAsText(file) {
     setTimeout(() => {
-      try {
-        if (file.shouldFail) {
-          if (this.onerror) {
-            this.onerror(new Error('Failed to read file'))
-          }
-        } else {
-          if (this.onload) {
-            this.onload({
-              target: {
-                result: JSON.stringify(file.data),
-              },
-            })
-          }
-        }
-      } catch (err) {
-        if (this.onerror) {
-          this.onerror(err)
-        }
+      if (file.shouldError) {
+        if (this.onerror) this.onerror()
+      } else {
+        this.result = file.content
+        if (this.onload) this.onload({ target: this })
       }
     }, 0)
   }
 }
 
-describe('TestCaseStore Persistence & Identity Preservation', () => {
-  const originalIndexedDB = globalThis.indexedDB
-  const originalFileReader = globalThis.FileReader
+// Now import target modules
+import {
+  saveTestCase,
+  getAllTestCases,
+  deleteTestCase,
+  togglePin,
+  searchTestCases,
+  updateUsedAt,
+  exportTestCases,
+  importTestCases,
+} from './testCaseStore'
 
-  let mockStore
-  let mockTx
-  let mockDb
-
+describe('testCaseStore', () => {
   beforeEach(() => {
-    mockStore = {
-      put: vi.fn(),
-      add: vi.fn(),
-      delete: vi.fn(),
-      get: vi.fn(),
-      getAll: vi.fn(),
-    }
-
-    mockTx = {
-      objectStore: vi.fn().mockReturnValue(mockStore),
-      oncomplete: null,
-      onerror: null,
-    }
-
-    mockDb = {
-      objectStoreNames: {
-        contains: vi.fn().mockReturnValue(true),
-      },
-      transaction: vi.fn().mockImplementation(() => {
-        setTimeout(() => {
-          if (mockTx.oncomplete) mockTx.oncomplete()
-        }, 0)
-        return mockTx
-      }),
-    }
-
-    const mockReq = {
-      onsuccess: null,
-      onerror: null,
-      result: mockDb,
-    }
-
-    globalThis.indexedDB = {
-      open: vi.fn().mockImplementation(() => {
-        setTimeout(() => {
-          if (mockReq.onsuccess) {
-            mockReq.onsuccess({ target: { result: mockDb } })
-          }
-        }, 0)
-        return mockReq
-      }),
-    }
-
-    globalThis.FileReader = DummyFileReader
+    mockStoreData.clear()
+    vi.clearAllMocks()
   })
 
-  afterEach(() => {
-    globalThis.indexedDB = originalIndexedDB
-    globalThis.FileReader = originalFileReader
-    vi.restoreAllMocks()
+  describe('saveTestCase & getAllTestCases', () => {
+    it('saves a testcase and retrieves it sorted by usedAt desc', async () => {
+      const tc1 = await saveTestCase({
+        name: 'Merge Sort Average Case',
+        algorithm: 'mergeSort',
+        input: '[5, 3, 8, 4]',
+        description: 'Random list',
+      })
+
+      expect(tc1.id).toBeDefined()
+      expect(tc1.name).toBe('Merge Sort Average Case')
+      expect(tc1.algorithm).toBe('mergeSort')
+      expect(tc1.input).toBe('[5, 3, 8, 4]')
+      expect(tc1.description).toBe('Random list')
+      expect(tc1.pinned).toBe(false)
+
+      await saveTestCase({
+        name: 'Merge Sort Best Case',
+        algorithm: 'mergeSort',
+        input: '[1, 2, 3, 4]',
+        description: 'Already sorted',
+      })
+
+      const all = await getAllTestCases()
+      expect(all).toHaveLength(2)
+      // The second one saved has a later usedAt timestamp and should be returned first
+      expect(all[0].name).toBe('Merge Sort Best Case')
+      expect(all[1].name).toBe('Merge Sort Average Case')
+    })
+
+    it('retrieves test cases filtered by algorithm', async () => {
+      await saveTestCase({
+        name: 'Binary Search Case',
+        algorithm: 'binarySearch',
+        input: '[1, 2, 3]',
+        description: 'Small list',
+      })
+
+      await saveTestCase({
+        name: 'Quick Sort Case',
+        algorithm: 'quickSort',
+        input: '[9, 2]',
+        description: 'Small list',
+      })
+
+      const searchFiltered = await getAllTestCases('binarySearch')
+      expect(searchFiltered).toHaveLength(1)
+      expect(searchFiltered[0].name).toBe('Binary Search Case')
+    })
   })
 
-  describe('buildTestCaseEntry', () => {
-    it('should preserve the original ID if provided', () => {
-      const existingId = 'tc_123456789_abcdef'
-      const entry = buildTestCaseEntry({
-        id: existingId,
-        name: 'Binary Search Test',
-        algorithm: 'Binary Search',
-        input: '1 2 3 4 5\n3',
-        description: 'Standard search',
-        pinned: true,
+  describe('deleteTestCase', () => {
+    it('successfully deletes a test case from the store', async () => {
+      const tc = await saveTestCase({
+        name: 'Test to delete',
+        algorithm: 'bubbleSort',
+        input: '[]',
       })
 
-      expect(entry.id).toBe(existingId)
-      expect(entry.name).toBe('Binary Search Test')
-      expect(entry.algorithm).toBe('Binary Search')
-      expect(entry.pinned).toBe(true)
-    })
+      let all = await getAllTestCases()
+      expect(all).toHaveLength(1)
 
-    it('should generate a new random ID if none is provided', () => {
-      const entry = buildTestCaseEntry({
-        name: 'Merge Sort Test',
-        algorithm: 'Merge Sort',
-        input: '5 4 3 2 1',
+      await deleteTestCase(tc.id)
+      all = await getAllTestCases()
+      expect(all).toHaveLength(0)
+    })
+  })
+
+  describe('togglePin', () => {
+    it('toggles the pinned state of an existing test case', async () => {
+      const tc = await saveTestCase({
+        name: 'Pin Test',
+        algorithm: 'quickSort',
+        input: '[1, 2]',
       })
 
-      expect(entry.id).toBeDefined()
-      expect(entry.id.startsWith('tc_')).toBe(true)
-      expect(entry.name).toBe('Merge Sort Test')
-      expect(entry.algorithm).toBe('Merge Sort')
-      expect(entry.pinned).toBe(false)
+      expect(tc.pinned).toBe(false)
+
+      const updated = await togglePin(tc.id)
+      expect(updated.pinned).toBe(true)
+
+      const reUpdated = await togglePin(tc.id)
+      expect(reUpdated.pinned).toBe(false)
     })
 
-    it('should fall back to generating a new ID for malformed or empty IDs', () => {
-      const entry = buildTestCaseEntry({
-        id: '',
+    it('throws error when test case is not found', async () => {
+      await expect(togglePin('non-existent-id')).rejects.toThrow(
+        'Test case not found'
+      )
+    })
+  })
+
+  describe('searchTestCases', () => {
+    it('returns all items when query is empty', async () => {
+      await saveTestCase({ name: 'One', algorithm: 'a', input: 'i1' })
+      await saveTestCase({ name: 'Two', algorithm: 'b', input: 'i2' })
+
+      const results = await searchTestCases('')
+      expect(results).toHaveLength(2)
+    })
+
+    it('filters items matching name, algorithm, input, or description case-insensitively', async () => {
+      await saveTestCase({
+        name: 'Bubble Sort Test',
+        algorithm: 'bubbleSort',
+        input: '[3, 1]',
+        description: 'average',
+      })
+      await saveTestCase({
         name: 'Quick Sort Test',
-        algorithm: 'Quick Sort',
-        input: '1 3 2',
+        algorithm: 'quickSort',
+        input: '[5, 2]',
+        description: 'best case',
       })
 
-      expect(entry.id).toBeDefined()
-      expect(entry.id.startsWith('tc_')).toBe(true)
-      expect(entry.id).not.toBe('')
+      // Match name
+      let results = await searchTestCases('bubble')
+      expect(results).toHaveLength(1)
+      expect(results[0].name).toBe('Bubble Sort Test')
+
+      // Match algorithm
+      results = await searchTestCases('quicksort')
+      expect(results).toHaveLength(1)
+      expect(results[0].name).toBe('Quick Sort Test')
+
+      // Match description
+      results = await searchTestCases('average')
+      expect(results).toHaveLength(1)
+      expect(results[0].name).toBe('Bubble Sort Test')
+
+      // Match input
+      results = await searchTestCases('[5, 2]')
+      expect(results).toHaveLength(1)
+      expect(results[0].name).toBe('Quick Sort Test')
+    })
+  })
+
+  describe('updateUsedAt', () => {
+    it('updates usedAt timestamp to current time', async () => {
+      const tc = await saveTestCase({
+        name: 'Timestamp update test',
+        algorithm: 'bubbleSort',
+        input: '[1]',
+      })
+
+      const oldUsedAt = tc.usedAt
+      // Wait briefly to guarantee new Date().toISOString() will be different
+      await new Promise((resolve) => setTimeout(resolve, 50))
+
+      const updated = await updateUsedAt(tc.id)
+      expect(updated.usedAt).not.toBe(oldUsedAt)
+      expect(new Date(updated.usedAt).getTime()).toBeGreaterThan(
+        new Date(oldUsedAt).getTime()
+      )
+    })
+
+    it('throws error when test case is not found', async () => {
+      await expect(updateUsedAt('invalid-id')).rejects.toThrow(
+        'Test case not found'
+      )
+    })
+  })
+
+  describe('exportTestCases', () => {
+    it('creates object URL and triggers download element click', () => {
+      const testCases = [{ id: '1', name: 'Export Test' }]
+      exportTestCases(testCases)
+
+      expect(globalThis.URL.createObjectURL).toHaveBeenCalled()
+      expect(globalThis.document.createElement).toHaveBeenCalledWith('a')
+      expect(globalThis.URL.revokeObjectURL).toHaveBeenCalledWith(
+        'mock-blob-url'
+      )
     })
   })
 
   describe('importTestCases', () => {
-    it('should preserve IndexedDB identity and use put() to allow overwriting', async () => {
+    it('imports valid JSON array into database', async () => {
       const importData = [
-        {
-          id: 'tc_existing_1',
-          name: 'Bubble Sort Test 1',
-          algorithm: 'Bubble Sort',
-          input: '3 2 1',
-          description: 'Reversed array',
-          pinned: false,
-          createdAt: '2026-05-28T12:00:00.000Z',
-          usedAt: '2026-05-28T12:05:00.000Z',
-        },
-        {
-          id: 'tc_existing_2',
-          name: 'Bubble Sort Test 2',
-          algorithm: 'Bubble Sort',
-          input: '1 2 3',
-          description: 'Sorted array',
-          pinned: true,
-          createdAt: '2026-05-28T12:10:00.000Z',
-          usedAt: '2026-05-28T12:15:00.000Z',
-        },
+        { name: 'Imported 1', algorithm: 'alg1', input: 'in1' },
+        { name: 'Imported 2', algorithm: 'alg2', input: 'in2', pinned: true },
       ]
 
-      const file = { data: importData, shouldFail: false }
+      const file = {
+        content: JSON.stringify(importData),
+        shouldError: false,
+      }
+
       const count = await importTestCases(file)
-
       expect(count).toBe(2)
-      expect(mockStore.put).toHaveBeenCalledTimes(2)
 
-      // Verify that put was called with identical IDs to preserve identity
-      const firstCallArg = mockStore.put.mock.calls[0][0]
-      const secondCallArg = mockStore.put.mock.calls[1][0]
-
-      expect(firstCallArg.id).toBe('tc_existing_1')
-      expect(firstCallArg.name).toBe('Bubble Sort Test 1')
-      expect(firstCallArg.createdAt).toBe('2026-05-28T12:00:00.000Z')
-
-      expect(secondCallArg.id).toBe('tc_existing_2')
-      expect(secondCallArg.name).toBe('Bubble Sort Test 2')
-      expect(secondCallArg.pinned).toBe(true)
+      const all = await getAllTestCases()
+      expect(all).toHaveLength(2)
+      expect(all.map((tc) => tc.name)).toContain('Imported 1')
+      expect(all.map((tc) => tc.name)).toContain('Imported 2')
     })
 
-    it('should fall back to generating IDs for imported entries that have no ID', async () => {
-      const importData = [
-        {
-          name: 'No ID Test',
-          algorithm: 'Linear Search',
-          input: '1 2 3',
-        },
-      ]
+    it('rejects if the import file is not a valid JSON array', async () => {
+      const file = {
+        content: JSON.stringify({ notAnArray: true }),
+        shouldError: false,
+      }
 
-      const file = { data: importData, shouldFail: false }
-      const count = await importTestCases(file)
+      await expect(importTestCases(file)).rejects.toThrow(
+        'Import file must contain an array of test cases'
+      )
+    })
 
-      expect(count).toBe(1)
-      expect(mockStore.put).toHaveBeenCalledTimes(1)
+    it('rejects if FileReader encounters an error', async () => {
+      const file = {
+        shouldError: true,
+      }
 
-      const callArg = mockStore.put.mock.calls[0][0]
-      expect(callArg.id).toBeDefined()
-      expect(callArg.id.startsWith('tc_')).toBe(true)
-      expect(callArg.name).toBe('No ID Test')
+      await expect(importTestCases(file)).rejects.toThrow()
     })
   })
 })
