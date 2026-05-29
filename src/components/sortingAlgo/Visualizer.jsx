@@ -6,6 +6,7 @@ import { useStepPlayback } from '../visualizer/useStepPlayback'
 import ComplexityCard from '../ComplexityCard'
 import Tooltip from '../Tooltip'
 import TestCaseManager from '../testCaseManager/TestCaseManager'
+import RecursiveTree from './RecursiveTree.jsx'
 
 import * as bubble from '../../algorithms/sorting/bubbleSortSteps'
 import * as selection from '../../algorithms/sorting/selectionSortSteps'
@@ -719,6 +720,12 @@ export default function Visualizer() {
                     </Tooltip>
                   </div>
                 </div>
+              )}
+              {selectedAlgorithm === 'merge' && (
+                <RecursiveTree
+                  tree={currentStep?.recursionTree}
+                  activeNode={currentStep?.activeNode}
+                />
               )}
             </div>
           </div>
