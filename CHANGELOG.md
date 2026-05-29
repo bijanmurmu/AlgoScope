@@ -5,31 +5,90 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.9.0](https://github.com/algoscope-hq/AlgoScope/compare/v1.8.0...v1.9.0) (2026-05-29)
+## [1.9.0] - 2026-05-29
 
+### Added
 
-### Features
+- implement native Floyd-Warshall for solo grid visualizer
+- integrate guess the algorithm challenge page into navigation, search, footer, and SEO
+- add MCQ quiz game
+- add empirical Big-O runtime benchmarking system (#386)
+- add responsive scroll-to-top button
+- refine grid comparison visualization and scoring
+- add grid comparison mode for shortest path algorithms
+- add custom array input for search visualizer (linear & binary)
 
-* add grid comparison mode for shortest path algorithms ([505d1da](https://github.com/algoscope-hq/AlgoScope/commit/505d1da9674a9789efaefe773d6fcd7a1bc2b5b3))
-* add responsive scroll-to-top button ([7fa33c3](https://github.com/algoscope-hq/AlgoScope/commit/7fa33c3d3ff4498fecb0e8f1d36de3a99c69fea3))
-* **challenge:** add MCQ quiz game ([79675d8](https://github.com/algoscope-hq/AlgoScope/commit/79675d839249b7f8c0e9d1b086d713d5ab53e304))
-* Dynamic Programming algorithm added ([ac40703](https://github.com/algoscope-hq/AlgoScope/commit/ac40703bf2cc04b76f721bc951d58f5e2307b6e7))
-* implement native Floyd-Warshall for solo grid visualizer ([dba04da](https://github.com/algoscope-hq/AlgoScope/commit/dba04da14a4d4eef6f990fdac4d2aa655d47b6ca))
-* integrate guess the algorithm challenge page into navigation, search, footer, and SEO ([88ff447](https://github.com/algoscope-hq/AlgoScope/commit/88ff447a61bf42fcb6fac545fd444399c8b0320d))
-* make the stack size custom ([f3d955f](https://github.com/algoscope-hq/AlgoScope/commit/f3d955fb4b40f5d0c16c18e4c6dcecc03a58dd72))
-* **profiler:** add empirical Big-O runtime benchmarking system ([#386](https://github.com/algoscope-hq/AlgoScope/issues/386)) ([4481f9c](https://github.com/algoscope-hq/AlgoScope/commit/4481f9cd77ace815a207f5bb1dd6c7f0e0b16239))
-* refine grid comparison visualization and scoring ([5be6fab](https://github.com/algoscope-hq/AlgoScope/commit/5be6fab5f50d7e9d9770368adefba772ad84c7a0))
+### Fixed
 
+- lint
+- restore string algorithms route and improve complexity layout
+- correct browser title on valid sub-routes
+- overlap between close button and sort dropdown
+- resolve formatting and division by zero when maxSize is 1
+- address remaining visualization nitpicks
+- address comparison mode review feedback
+- resolve footer link JSX syntax issue
+- make maintainer link styles consistent
 
-### Bug Fixes
+### Changed
 
-* address comparison mode review feedback ([9d80910](https://github.com/algoscope-hq/AlgoScope/commit/9d80910ef28b2780b16afa47a4c86b619365b969))
-* address remaining visualization nitpicks ([15f90be](https://github.com/algoscope-hq/AlgoScope/commit/15f90be8a7ecda3fa52c00dd13849a704b231853))
-* correct browser title on valid sub-routes ([c2876e0](https://github.com/algoscope-hq/AlgoScope/commit/c2876e094bc5f0fc8f5fe4545d2c082a0d31ce02))
-* lint ([a651e09](https://github.com/algoscope-hq/AlgoScope/commit/a651e0994332af7c48e7684e1c30b8de5e6ec26d))
-* overlap between close button and sort dropdown ([3ec8ce8](https://github.com/algoscope-hq/AlgoScope/commit/3ec8ce8baf1a69164d2219aa5a8f08ea6d9bef8c))
-* **profiler:** resolve formatting and division by zero when maxSize is 1 ([9c0b01d](https://github.com/algoscope-hq/AlgoScope/commit/9c0b01d82115dcebfaea59dbd62cea550837d769))
-* restore string algorithms route and improve complexity layout ([6e1ad10](https://github.com/algoscope-hq/AlgoScope/commit/6e1ad1032070d49e849cd879a9b47d0fd9a1962a))
+- standardize semantic theme variable syntax
+- replace hardcoded colors with semantic theme variables
+
+### 📂 Changed Files
+
+```
+- 📁 **.github/**
+  - 📁 **ISSUE_TEMPLATE/**
+    - ✏️ feature_request.yml
+- 📁 **src/**
+  - 📁 **algorithms/**
+    - 📁 **dp/**
+      - ➕ dpStepGenerators.js
+    - 📁 **sorting/**
+      - ✏️ mergeSortSteps.js
+  - 📁 **components/**
+    - 📁 **arraySearch/**
+      - ✏️ Visualizer.jsx
+    - 📁 **backtrackingAlgo/**
+      - ✏️ VisualizerPage.jsx
+    - 📁 **challenge/**
+      - ➕ ChallengePage.jsx
+      - ➕ ChallengeVisualizer.jsx
+    - 📁 **dataStructures/**
+      - ✏️ stackIV.jsx
+    - 📁 **dynamicProgramming/**
+      - ➕ DPVisualizer.jsx
+    - 📁 **MathTheory/**
+      - ✏️ MathSoloVisualizer.jsx
+    - 📁 **shortestPathAlgo/**
+      - ➕ GridComparisonMode.jsx
+      - ✏️ GridVisualizer.jsx
+      - ✏️ ShortestPathPage.jsx
+    - 📁 **sortingAlgo/**
+      - ➕ RecursiveTree.jsx
+      - ✏️ Visualizer.jsx
+    - 📁 **stringAlgo/**
+      - ✏️ VisualizerPage.jsx
+    - 📁 **visualizer/**
+      - ✏️ CodePanel.jsx
+    - ✏️ AppLayout.jsx
+    - ✏️ CodeEditor.jsx
+    - ✏️ ComplexityCard.jsx
+    - ✏️ Footer.jsx
+    - ✏️ Home.jsx
+    - ✏️ Navbar.jsx
+    - ✏️ PracticePage.jsx
+    - ➕ ProfilerGraph.jsx
+    - ➕ ScrollToTopButton.jsx
+    - ✏️ SearchBar.jsx
+    - ✏️ SeoHead.jsx
+  - ✏️ App.jsx
+  - ✏️ input.css
+- ✏️ CHANGELOG.md
+- ✏️ package-lock.json
+- ✏️ README.md
+```
 
 ## [1.8.0] - 2026-05-26
 
@@ -839,3 +898,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ➕ vite.config.js
 - ➕ yarn.lock
 ```
+
