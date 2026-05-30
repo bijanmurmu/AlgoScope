@@ -650,7 +650,7 @@ export const getFibonacciSource = (language) =>
 export const resolveFibonacciLine = (language, lineKey) =>
   (fibonacciSources[language] ?? fibonacciSources.javascript).lineMap?.[lineKey]
 
-// FAST FOURIER TRANSFORM 
+// FAST FOURIER TRANSFORM
 
 export const fftSources = {
   javascript: {
@@ -851,4 +851,3 @@ export const getFFTSource = (language) =>
 
 export const resolveFFTLine = (language, lineKey) =>
   (fftSources[language] ?? fftSources.javascript).lineMap?.[lineKey]
-

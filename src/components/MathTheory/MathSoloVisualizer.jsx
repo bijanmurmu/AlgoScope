@@ -41,7 +41,7 @@ const ALGO_TABS = [
   { key: 'bits', label: 'Bit Manipulation', complexityKey: 'bitmanip' },
   { key: 'sieve', label: 'Sieve of Eratosthenes', complexityKey: 'sieve' },
   { key: 'fibonacci', label: 'Fibonacci Sequence', complexityKey: 'fibonacci' },
-  {key: 'fft', label: 'Fast Fourier Transform', complexityKey: 'fft' },
+  { key: 'fft', label: 'Fast Fourier Transform', complexityKey: 'fft' },
 ]
 
 const DEFAULT_ALGO_KEY = 'gcd'
@@ -138,8 +138,8 @@ export const MathSoloVisualizer = () => {
         autoPlay: !isStepMode,
       })
     } else if (algo === 'fft') {
-        const signal = generateSignal(fftN, fftType)
-        loadSteps(generateFFTSteps(signal), { autoPlay: !isStepMode })
+      const signal = generateSignal(fftN, fftType)
+      loadSteps(generateFFTSteps(signal), { autoPlay: !isStepMode })
     } else {
       loadSteps(generateBitOpSteps(Number(bitA), Number(bitB), bitOp), {
         autoPlay: !isStepMode,
@@ -168,8 +168,7 @@ export const MathSoloVisualizer = () => {
     if (algo === 'sieve') return resolveSieveLine(language, currentStep.lineKey)
     if (algo === 'fibonacci')
       return resolveFibonacciLine(language, currentStep.lineKey)
-    if (algo === 'fft')       
-      return resolveFFTLine(language, currentStep.lineKey)
+    if (algo === 'fft') return resolveFFTLine(language, currentStep.lineKey)
     if (algo === 'bits')
       return resolveBitManipLine(language, currentStep.lineKey)
     return undefined
@@ -428,7 +427,10 @@ export const MathSoloVisualizer = () => {
               </label>
               <select
                 value={fftN}
-                onChange={(e) => { setFftN(Number(e.target.value)); clear() }}
+                onChange={(e) => {
+                  setFftN(Number(e.target.value))
+                  clear()
+                }}
                 className="w-full rounded-xl border border-slate-700 bg-slate-800 px-4 py-2.5 text-white outline-none focus:border-cyan-500 text-sm"
               >
                 <option value={4}>4</option>
@@ -442,20 +444,32 @@ export const MathSoloVisualizer = () => {
               </label>
               <select
                 value={fftType}
-                onChange={(e) => { setFftType(e.target.value); clear() }}
+                onChange={(e) => {
+                  setFftType(e.target.value)
+                  clear()
+                }}
                 className="w-full rounded-xl border border-slate-700 bg-slate-800 px-4 py-2.5 text-white outline-none focus:border-cyan-500 text-sm"
               >
-                {['ramp', 'sine', 'cosine', 'impulse', 'square', 'noise'].map((t) => (
-                  <option key={t} value={t}>{t}</option>
-                ))}
+                {['ramp', 'sine', 'cosine', 'impulse', 'square', 'noise'].map(
+                  (t) => (
+                    <option key={t} value={t}>
+                      {t}
+                    </option>
+                  )
+                )}
               </select>
               <p className="text-[10px] text-slate-600 mt-1">
-                {fftType === 'sine'    && 'One cycle of sin(2πi/N) — two spectrum spikes'}
-                {fftType === 'cosine'  && 'One cycle of cos(2πi/N) — symmetric spikes'}
-                {fftType === 'impulse' && 'x[0]=1, rest 0 — flat magnitude spectrum'}
-                {fftType === 'square'  && 'First half +1, second half −1 — odd harmonics'}
-                {fftType === 'ramp'    && 'x[n] = n+1 — linearly increasing signal'}
-                {fftType === 'noise'   && 'Random values — broad noisy spectrum'}
+                {fftType === 'sine' &&
+                  'One cycle of sin(2πi/N) — two spectrum spikes'}
+                {fftType === 'cosine' &&
+                  'One cycle of cos(2πi/N) — symmetric spikes'}
+                {fftType === 'impulse' &&
+                  'x[0]=1, rest 0 — flat magnitude spectrum'}
+                {fftType === 'square' &&
+                  'First half +1, second half −1 — odd harmonics'}
+                {fftType === 'ramp' &&
+                  'x[n] = n+1 — linearly increasing signal'}
+                {fftType === 'noise' && 'Random values — broad noisy spectrum'}
               </p>
             </div>
           </div>
@@ -605,11 +619,7 @@ export const MathSoloVisualizer = () => {
           />
         )}
         {algo === 'fft' && (
-          <CanvasFFT 
-            currentStep={currentStep} 
-            fftN={fftN} 
-            fftType={fftType} 
-          />
+          <CanvasFFT currentStep={currentStep} fftN={fftN} fftType={fftType} />
         )}
 
         <CodePanel

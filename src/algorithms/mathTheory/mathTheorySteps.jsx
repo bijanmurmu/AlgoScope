@@ -628,12 +628,14 @@ function bitReverse(arr) {
 export function generateSignal(n, type) {
   switch (type) {
     case 'sine':
-      return Array.from({ length: n }, (_, i) =>
-        +Math.sin((2 * Math.PI * i) / n).toFixed(4)
+      return Array.from(
+        { length: n },
+        (_, i) => +Math.sin((2 * Math.PI * i) / n).toFixed(4)
       )
     case 'cosine':
-      return Array.from({ length: n }, (_, i) =>
-        +Math.cos((2 * Math.PI * i) / n).toFixed(4)
+      return Array.from(
+        { length: n },
+        (_, i) => +Math.cos((2 * Math.PI * i) / n).toFixed(4)
       )
     case 'impulse':
       return Array.from({ length: n }, (_, i) => (i === 0 ? 1 : 0))
@@ -642,15 +644,16 @@ export function generateSignal(n, type) {
     case 'ramp':
       return Array.from({ length: n }, (_, i) => i + 1)
     case 'noise':
-      return Array.from({ length: n }, () =>
-        +(Math.random() * 2 - 1).toFixed(4)
+      return Array.from(
+        { length: n },
+        () => +(Math.random() * 2 - 1).toFixed(4)
       )
     default:
       return Array.from({ length: n }, (_, i) => i + 1)
   }
 }
 
-// generateFFTSteps 
+// generateFFTSteps
 // input: number[]  (real-valued signal, length must be power of 2, 4–16)
 
 export function generateFFTSteps(inputSignal) {
@@ -753,7 +756,6 @@ export function generateFFTSteps(inputSignal) {
 
     // Process each group
     for (let k = 0; k < validN; k += full) {
-
       for (let j = 0; j < half; j++) {
         const topIdx = k + j
         const botIdx = k + j + half
@@ -774,7 +776,14 @@ export function generateFFTSteps(inputSignal) {
             type: 'compare',
             stage: s,
             nodes: nodesSnapshot,
-            butterflies: [{ top: topIdx, bot: botIdx, twiddleRe: +twRe.toFixed(3), twiddleIm: +twIm.toFixed(3) }],
+            butterflies: [
+              {
+                top: topIdx,
+                bot: botIdx,
+                twiddleRe: +twRe.toFixed(3),
+                twiddleIm: +twIm.toFixed(3),
+              },
+            ],
             naiveOps: naiveTotalOps,
             fftOps,
             message: `Butterfly (${topIdx}, ${botIdx}): W = ${formatComplex(twRe, twIm)} · X[${botIdx}]`,

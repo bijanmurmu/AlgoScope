@@ -113,6 +113,6 @@ export function formatComplex(re, im) {
   const r = +re.toFixed(2)
   const i = +im.toFixed(2)
   if (i === 0) return `${r}`
-  if (i < 0)   return `${r} − ${Math.abs(i)}i`
+  if (i < 0) return `${r} − ${Math.abs(i)}i`
   return `${r} + ${i}i`
 }
