@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 
-const ROWS = 20
+const ROWS = 24
 const COLS = 40
 
-const START_ROW = 10
+const START_ROW = 12
 const START_COL = 5
 
-const END_ROW = 10
+const END_ROW = 12
 const END_COL = 34
 
 const MAZE_WALL_PROBABILITY = 0.25
@@ -73,11 +73,19 @@ const createGrid = () => {
 const getNeighbors = (node, currentGrid) => {
   const neighbors = []
   const { row, col } = node
-  if (row > 0) neighbors.push(currentGrid[row - 1][col])
-  if (row < ROWS - 1) neighbors.push(currentGrid[row + 1][col])
-  if (col > 0) neighbors.push(currentGrid[row][col - 1])
-  if (col < COLS - 1) neighbors.push(currentGrid[row][col + 1])
-  return neighbors.filter((n) => !n.isWall)
+
+  if (row > 0 && currentGrid[row - 1]) neighbors.push(currentGrid[row - 1][col])
+
+  if (row < currentGrid.length - 1 && currentGrid[row + 1])
+    neighbors.push(currentGrid[row + 1][col])
+
+  if (col > 0 && currentGrid[row][col - 1])
+    neighbors.push(currentGrid[row][col - 1])
+
+  if (col < currentGrid[row].length - 1 && currentGrid[row][col + 1])
+    neighbors.push(currentGrid[row][col + 1])
+
+  return neighbors.filter(Boolean).filter((n) => !n.isWall)
 }
 
 const runDijkstra = (currentGrid) => {
@@ -169,11 +177,98 @@ const runBellmanFord = (currentGrid) => {
   return { order, parent, distances: dists }
 }
 
-// Grid visualization uses a single start/end pair,
-// so Floyd-Warshall delegates to Dijkstra for visualization consistency.
 const runFloydWarshallVisualization = (currentGrid) => {
-  const visualizationResult = runDijkstra(currentGrid)
-  return visualizationResult
+  const nodes = []
+  const nodeIndex = {}
+
+  for (const row of currentGrid) {
+    for (const node of row) {
+      if (!node.isWall) {
+        nodeIndex[`${node.row}-${node.col}`] = nodes.length
+        nodes.push(node)
+      }
+    }
+  }
+
+  const N = nodes.length
+  if (N === 0) return { order: [], parent: {}, distances: {} }
+
+  const INF = Infinity
+
+  const dist = new Float64Array(N * N).fill(INF)
+  const pred = new Int16Array(N * N).fill(-1)
+
+  for (let i = 0; i < N; i++) {
+    dist[i * N + i] = 0
+  }
+
+  for (let i = 0; i < N; i++) {
+    const u = nodes[i]
+    const neighbors = getNeighbors(u, currentGrid)
+    for (const v of neighbors) {
+      const j = nodeIndex[`${v.row}-${v.col}`]
+      if (j === undefined) continue
+      const cost = v.weight
+      if (cost < dist[i * N + j]) {
+        dist[i * N + j] = cost
+        pred[i * N + j] = i
+      }
+    }
+  }
+
+  const startKey = `${START_ROW}-${START_COL}`
+  const endKey = `${END_ROW}-${END_COL}`
+  const startIdx = nodeIndex[startKey]
+  const endIdx = nodeIndex[endKey]
+
+  const visitedOrder = []
+  const visitedSet = new Set()
+
+  for (let k = 0; k < N; k++) {
+    for (let i = 0; i < N; i++) {
+      const dik = dist[i * N + k]
+      if (dik === INF) continue
+      for (let j = 0; j < N; j++) {
+        const dkj = dist[k * N + j]
+        if (dkj === INF) continue
+        const newDist = dik + dkj
+        if (newDist < dist[i * N + j]) {
+          dist[i * N + j] = newDist
+          pred[i * N + j] = pred[k * N + j]
+
+          if (i === startIdx && j !== startIdx && !visitedSet.has(j)) {
+            visitedSet.add(j)
+            visitedOrder.push(nodes[j])
+          }
+        }
+      }
+    }
+  }
+
+  const distances = {}
+  if (startIdx !== undefined) {
+    for (let j = 0; j < N; j++) {
+      const node = nodes[j]
+      distances[`${node.row}-${node.col}`] = dist[startIdx * N + j]
+    }
+  }
+
+  const parent = {}
+  if (startIdx !== undefined && endIdx !== undefined) {
+    let cur = endIdx
+    const seen = new Set()
+    while (cur !== -1 && cur !== startIdx && !seen.has(cur)) {
+      seen.add(cur)
+      const p = pred[startIdx * N + cur]
+      if (p === -1 || p === cur) break
+      parent[`${nodes[cur].row}-${nodes[cur].col}`] = nodes[p]
+      cur = p
+    }
+  }
+
+  const order = visitedOrder.filter((n) => !n.isStart && !n.isEnd)
+
+  return { order, parent, distances }
 }
 
 const buildPath = (parent, currentGrid) => {
@@ -233,8 +328,18 @@ const GridVisualizer = ({ algorithm, runKey, speed }) => {
     setVisitedCount(0)
   }
 
+  const resetAll = () => {
+    clearTimers()
+    setRunning(false)
+    setGrid(createGrid())
+    setPathCost(0)
+    setVisitedCount(0)
+    setDrawMode('wall')
+  }
+
   const handleMouseInteraction = (row, col) => {
     if (running) return
+    clearPath()
     setGrid((prev) => {
       const node = prev[row][col]
       if (node.isStart || node.isEnd) return prev
@@ -406,6 +511,13 @@ const GridVisualizer = ({ algorithm, runKey, speed }) => {
           className="px-4 py-2 bg-[var(--theme-surface-strong)] rounded-lg text-(--theme-text-strong) font-semibold text-sm"
         >
           Clear Path
+        </button>
+        <button
+          aria-label="Reset All"
+          onClick={resetAll}
+          className="px-4 py-2 bg-[var(--theme-surface-strong)] rounded-lg text-(--theme-text-strong) font-semibold text-sm"
+        >
+          Reset All
         </button>
       </div>
 
