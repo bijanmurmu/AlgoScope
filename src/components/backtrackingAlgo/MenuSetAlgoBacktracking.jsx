@@ -177,7 +177,7 @@ export const MenuSetAlgoBacktracking = ({
                 on each failed attempt.
               </p>
               <p className="mt-2 text-xs text-slate-500">
-                Adjust k below the graphs chromatic number to see the solver
+                Adjust k below the graph&apos;s chromatic number to see the solver
                 prove no solution exists.
               </p>
             </div>

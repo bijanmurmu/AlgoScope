@@ -83,7 +83,15 @@ const CHROMATIC_NUMBERS = {
   'Wheel (7)': 4,
 }
 
-const COLOR_PALETTE = [null, '#22d3ee', '#f97316', '#a855f7', '#facc15']
+const COLOR_PALETTE = [
+  null,
+  '#22d3ee',
+  '#f97316',
+  '#a855f7',
+  '#facc15',
+  '#4ade80',
+  '#f43f5e',
+]
 const MAX_NODES = 12
 const SVG_W = 400
 const SVG_H = 400
@@ -318,7 +326,7 @@ export const CanvasGraphColoring = ({
       stepIndex: prev,
       backtracks: trueBacktracks,
       steps: prev,
-      logEntries: logEntries.slice(0, prev),
+      logEntries: logEntries.slice(0, prev + 1),
     })
   }
 

@@ -718,7 +718,11 @@ int solve(int node) {
     },
     rust: {
       code: `fn is_safe(graph: &[Vec<usize>], colors: &[usize], node: usize, color: usize) -> bool {
-    graph[node].iter().all(|&nb| colors[nb] != color)
+                for (i, &connected) in graph[node].iter().enumerate() {
+                    if connected == 1 && colors[i] == color { return false; }
+                }
+                true
+            }
 }
 
 fn solve(graph: &[Vec<usize>], colors: &mut Vec<usize>, node: usize, k: usize) -> bool {
