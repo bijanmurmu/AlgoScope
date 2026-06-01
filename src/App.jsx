@@ -85,7 +85,6 @@ const PageLoader = () => (
   </div>
 )
 
-function App() {
 const router = createBrowserRouter([
   {
     path: '/',
