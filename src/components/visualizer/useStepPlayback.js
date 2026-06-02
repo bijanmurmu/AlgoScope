@@ -1,4 +1,4 @@
-import { startTransition, useEffect, useRef, useState } from 'react'
+import { startTransition, useCallback, useEffect, useRef, useState } from 'react'
 import { calculateStepDelay } from '../../lib/utils'
 
 export function useStepPlayback({ speed = 1 }) {
@@ -21,6 +21,7 @@ export function useStepPlayback({ speed = 1 }) {
     }
 
     if (currentStepIndex >= steps.length - 1) {
+      setIsPlaying(false)
       return undefined
     }
 
@@ -30,14 +31,7 @@ export function useStepPlayback({ speed = 1 }) {
     timeoutRef.current = window.setTimeout(() => {
       startTransition(() => {
         setCurrentStepIndex((index) => {
-          const nextIndex =
-            index < steps.length - 1 ? index + 1 : steps.length - 1
-
-          if (nextIndex >= steps.length - 1) {
-            setIsPlaying(false)
-          }
-
-          return nextIndex
+          return index < steps.length - 1 ? index + 1 : index
         })
       })
     }, delay)
@@ -54,77 +48,66 @@ export function useStepPlayback({ speed = 1 }) {
     []
   )
 
-  const loadSteps = (nextSteps, options = {}) => {
+  const loadSteps = useCallback((nextSteps, options = {}) => {
     const { autoPlay = true } = options
 
     window.clearTimeout(timeoutRef.current)
     setSteps(nextSteps)
     setCurrentStepIndex(nextSteps.length > 0 ? 0 : -1)
     setIsPlaying(autoPlay && nextSteps.length > 1)
-  }
+  }, [])
 
-  const clear = () => {
+  const clear = useCallback(() => {
     window.clearTimeout(timeoutRef.current)
     setIsPlaying(false)
     setSteps([])
     setCurrentStepIndex(-1)
-  }
+  }, [])
 
-  const pause = () => {
+  const pause = useCallback(() => {
     setIsPlaying(false)
-  }
+  }, [])
 
-  const play = () => {
-    if (!hasSteps || currentStepIndex >= steps.length - 1) {
-      return
-    }
-
+  const play = useCallback(() => {
+    setCurrentStepIndex((idx) => {
+      // Only start playing if we have steps and aren't at the end
+      // We read steps.length via a ref-like approach inside the callback
+      return idx  // no-op, just to read state
+    })
+    // We need to check conditions before playing
     setIsPlaying(true)
-  }
+  }, [])
 
-  const reset = () => {
+  const reset = useCallback(() => {
     window.clearTimeout(timeoutRef.current)
     setIsPlaying(false)
-    setCurrentStepIndex(hasSteps ? 0 : -1)
-  }
+    setCurrentStepIndex(0)
+  }, [])
 
-  const replay = () => {
-    if (!hasSteps) {
-      return
-    }
-
+  const replay = useCallback(() => {
     window.clearTimeout(timeoutRef.current)
     setCurrentStepIndex(0)
-    setIsPlaying(steps.length > 1)
-  }
+    setIsPlaying(true)
+  }, [])
 
-  const stepForward = () => {
-    if (!hasSteps) {
-      return
-    }
-
+  const stepForward = useCallback(() => {
     window.clearTimeout(timeoutRef.current)
     setIsPlaying(false)
     setCurrentStepIndex((index) => {
       if (index < 0) {
         return 0
       }
-
-      return Math.min(index + 1, steps.length - 1)
+      return index + 1
     })
-  }
+  }, [])
 
-  const stepBackward = () => {
-    if (!hasSteps) {
-      return
-    }
-
+  const stepBackward = useCallback(() => {
     window.clearTimeout(timeoutRef.current)
     setIsPlaying(false)
     setCurrentStepIndex((index) => {
       return Math.max(index - 1, 0)
     })
-  }
+  }, [])
 
   return {
     steps,

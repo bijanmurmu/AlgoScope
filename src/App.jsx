@@ -226,6 +226,16 @@ function App() {
       ),
     },
     {
+      path: '/challenge',
+      element: (
+        <Suspense fallback={<PageLoader />}>
+          <AppLayout>
+            <ChallengePage />
+          </AppLayout>
+        </Suspense>
+      ),
+    },
+    {
       path: '*',
       element: (
         <Suspense fallback={<PageLoader />}>
