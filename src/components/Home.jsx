@@ -82,6 +82,12 @@ const ALGORITHMS = [
     link: '/dynamic-programming',
   },
   {
+    title: 'DP Optimization Journey',
+    description: 'Visualize the progression from Recursion to Space Optimization.',
+    color: 'theme-card border-rose-500/30 hover:border-rose-400',
+    link: '/dp-journey',
+  },
+  {
     title: 'Backtracking',
     description:
       'N-Queens, Sudoku Solver, and Tower of Hanoi with step-by-step recursion.',

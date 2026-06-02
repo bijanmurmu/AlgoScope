@@ -55,9 +55,8 @@ const ThemeToggleButton = ({ compact = false }) => {
       onClick={toggleTheme}
       aria-label={label}
       title={label}
-      className={`theme-toggle inline-flex items-center justify-center rounded-xl border transition-all duration-300 active:scale-95 focus:outline-none focus:ring-2 focus:ring-cyan-400/40 ${
-        compact ? 'h-10 w-10' : 'h-10 w-10 md:h-10 md:w-10'
-      }`}
+      className={`theme-toggle inline-flex items-center justify-center rounded-xl border transition-all duration-300 active:scale-95 focus:outline-none focus:ring-2 focus:ring-cyan-400/40 ${compact ? 'h-10 w-10' : 'h-10 w-10 md:h-10 md:w-10'
+        }`}
     >
       {isDark ? (
         <svg
@@ -107,6 +106,7 @@ const algorithmLinks = [
   { name: 'Backtracking', href: '/backtracking' },
   { name: 'Practice Sandbox', href: '/practice' },
   { name: 'Guess the Algorithm', href: '/challenge' },
+  { name: 'DP Optimization Journey', href: '/dp-journey' },
 ]
 
 export const Navbar = () => {
@@ -239,11 +239,10 @@ export const Navbar = () => {
                 <div
                   id="desktop-explore-menu"
                   role="menu"
-                  className={`absolute left-0 top-full mt-3 py-2 w-64 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-950 p-2 shadow-2xl backdrop-blur-2xl transition-all duration-300 z-50 ${
-                    isExploreMenuOpen
-                      ? 'visible opacity-100 translate-y-0'
-                      : 'invisible opacity-0 translate-y-2'
-                  }`}
+                  className={`absolute left-0 top-full mt-3 py-2 w-64 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-950 p-2 shadow-2xl backdrop-blur-2xl transition-all duration-300 z-50 ${isExploreMenuOpen
+                    ? 'visible opacity-100 translate-y-0'
+                    : 'invisible opacity-0 translate-y-2'
+                    }`}
                 >
                   {algorithmLinks.map((link) => (
                     <Link
@@ -251,11 +250,10 @@ export const Navbar = () => {
                       to={link.href}
                       role="menuitem"
                       onClick={closeExploreMenu}
-                      className={`block rounded-lg px-4 py-2 text-sm transition-all duration-200 border-l-2 ${
-                        pathname === link.href
-                          ? 'bg-indigo-50/80 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-300 border-indigo-600 dark:border-indigo-500 font-medium'
-                          : 'text-slate-600 dark:text-slate-400 border-transparent hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-slate-200 hover:border-slate-300 dark:hover:border-slate-700'
-                      }`}
+                      className={`block rounded-lg px-4 py-2 text-sm transition-all duration-200 border-l-2 ${pathname === link.href
+                        ? 'bg-indigo-50/80 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-300 border-indigo-600 dark:border-indigo-500 font-medium'
+                        : 'text-slate-600 dark:text-slate-400 border-transparent hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-slate-200 hover:border-slate-300 dark:hover:border-slate-700'
+                        }`}
                     >
                       {link.name}
                     </Link>
@@ -300,11 +298,10 @@ export const Navbar = () => {
               >
                 <Link
                   to="/practice"
-                  className={`relative text-sm font-medium px-4 py-1.5 rounded-lg transition-all duration-300 z-10 ${
-                    pathname === '/practice'
-                      ? 'text-indigo-600 dark:text-indigo-300 font-semibold'
-                      : 'text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
-                  }`}
+                  className={`relative text-sm font-medium px-4 py-1.5 rounded-lg transition-all duration-300 z-10 ${pathname === '/practice'
+                    ? 'text-indigo-600 dark:text-indigo-300 font-semibold'
+                    : 'text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
+                    }`}
                 >
                   Practice
                 </Link>
@@ -327,11 +324,10 @@ export const Navbar = () => {
               >
                 <Link
                   to="/challenge"
-                  className={`relative text-sm font-medium px-4 py-1.5 rounded-lg transition-all duration-300 z-10 ${
-                    pathname === '/challenge'
-                      ? 'text-indigo-600 dark:text-indigo-300 font-semibold'
-                      : 'text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
-                  }`}
+                  className={`relative text-sm font-medium px-4 py-1.5 rounded-lg transition-all duration-300 z-10 ${pathname === '/challenge'
+                    ? 'text-indigo-600 dark:text-indigo-300 font-semibold'
+                    : 'text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
+                    }`}
                 >
                   Challenge
                 </Link>
@@ -494,11 +490,10 @@ export const Navbar = () => {
                         <Link
                           to={link.href}
                           onClick={() => setOpen(false)}
-                          className={`block rounded-lg px-4 py-2.5 text-sm transition-all duration-200 border-l-2 ${
-                            pathname === link.href
-                              ? 'bg-indigo-50/80 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-300 border-indigo-600 dark:border-indigo-500 font-semibold'
-                              : 'text-slate-600 dark:text-slate-400 border-transparent hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-slate-200 hover:border-slate-300 dark:hover:border-slate-700'
-                          }`}
+                          className={`block rounded-lg px-4 py-2.5 text-sm transition-all duration-200 border-l-2 ${pathname === link.href
+                            ? 'bg-indigo-50/80 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-300 border-indigo-600 dark:border-indigo-500 font-semibold'
+                            : 'text-slate-600 dark:text-slate-400 border-transparent hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-slate-200 hover:border-slate-300 dark:hover:border-slate-700'
+                            }`}
                         >
                           {link.name}
                         </Link>
