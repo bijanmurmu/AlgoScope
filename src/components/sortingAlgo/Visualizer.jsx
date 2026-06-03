@@ -9,7 +9,6 @@ import TestCaseManager from '../testCaseManager/TestCaseManager'
 import RecursiveTree from './RecursiveTree.jsx'
 import { useKeyboardShortcuts } from '../visualizer/useKeyboardShortcuts'
 
-
 import * as bubble from '../../algorithms/sorting/bubbleSortSteps'
 import * as selection from '../../algorithms/sorting/selectionSortSteps'
 import * as insertion from '../../algorithms/sorting/insertionSortSteps'
@@ -230,7 +229,6 @@ export default function Visualizer() {
     onSpeedUp: () => setSpeed((s) => Math.min(3, +(s + 0.25).toFixed(2))),
     onSlowDown: () => setSpeed((s) => Math.max(0.25, +(s - 0.25).toFixed(2))),
   })
-
 
   const handleApplyCustomArray = () => {
     setInputError('')

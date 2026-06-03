@@ -14,7 +14,6 @@ import { ComparisonMode } from './ComparisonMode'
 import { getBacktrackingSource } from '../../algorithms/backtracking/backtrackingSources'
 import { useKeyboardShortcuts } from '../visualizer/useKeyboardShortcuts'
 
-
 export default function VisualizerPage() {
   useEffect(() => {
     document.title = 'Backtracking | AlgoScope'
@@ -162,7 +161,6 @@ function SoloMode() {
     setAlgo(a)
     setTrigger(0)
   }
-
 
   const currentSource = useMemo(
     () => getBacktrackingSource(algo, language),
