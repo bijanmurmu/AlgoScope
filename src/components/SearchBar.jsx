@@ -337,6 +337,8 @@ const ALGORITHMS = [
     keywords: [
       'dp-journey',
       'dpjourney',
+      'dp optimization',
+      'dynamic programming optimization',
       'Coin Change',
       'Fibonacci',
       'Climbing Stairs',
