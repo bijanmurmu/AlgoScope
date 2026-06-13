@@ -5,26 +5,65 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.12.0](https://github.com/algoscope-hq/AlgoScope/compare/v1.11.0...v1.12.0) (2026-06-13)
+## [1.12.0] - 2026-06-13
 
+### Added
 
-### Features
+- add drag and drop support for start and end nodes
+- add glassmorphism effect to Clerk sign in/up modal
+- add CPU scheduling visualizer with FCFS and SJF
+- add cpu scheduling route
+- add algorithm bookmark favorites system
 
-* add algorithm bookmark favorites system ([fd5d3bc](https://github.com/algoscope-hq/AlgoScope/commit/fd5d3bc20002e0288b63defcf1aa158105842a4e))
-* add cpu scheduling route ([465d631](https://github.com/algoscope-hq/AlgoScope/commit/465d6312eca52166b3d1281a9c9be99e1c350627))
-* add CPU scheduling visualizer with FCFS and SJF ([ddb29d1](https://github.com/algoscope-hq/AlgoScope/commit/ddb29d1c278e9b5cafe66b97d83cfb6cbced911c))
-* add drag and drop support for start and end nodes ([cc1e80f](https://github.com/algoscope-hq/AlgoScope/commit/cc1e80f7a2d7f3dbf7ccc9aa873233a96feb82ed))
-* add glassmorphism effect to Clerk sign in/up modal ([f4d1016](https://github.com/algoscope-hq/AlgoScope/commit/f4d1016d244aca5743cde571dfd7dd46f18985eb))
+### Fixed
 
+- resolve lint errors
+- expand format check to project files
+- add metadata for missing application routes
+- add missing routes to sitemap
+- add missing pageMetadata entries for /dynamic-programming and /dp-journey routes
+- resolve inline style specificity clash in light and dark modes
 
-### Bug Fixes
+### 📂 Changed Files
 
-* add missing pageMetadata entries for /dynamic-programming and /dp-journey routes ([c4a524e](https://github.com/algoscope-hq/AlgoScope/commit/c4a524ed0799d20b53c2dcbbc823a7d1a5759912))
-* **prettier:** expand format check to project files ([0f0b799](https://github.com/algoscope-hq/AlgoScope/commit/0f0b799ce258e5bc5e5daeab317ebb74f3500a49))
-* resolve lint errors ([b98fd85](https://github.com/algoscope-hq/AlgoScope/commit/b98fd85023b8384a3f95c719eda3237b48c4ea70))
-* **seo:** add metadata for missing application routes ([9d3886d](https://github.com/algoscope-hq/AlgoScope/commit/9d3886d4d69b5eccdd1aadfc150516167781099e))
-* **seo:** add missing routes to sitemap ([f4b7531](https://github.com/algoscope-hq/AlgoScope/commit/f4b75315ee725b4685a56e46c2beb91252a9a398))
-* **visualizers:** resolve inline style specificity clash in light and dark modes ([a4561b5](https://github.com/algoscope-hq/AlgoScope/commit/a4561b52e92d36c689c69ca473fa8dc05d4528e5))
+```
+- 📁 **public/**
+  - ✏️ preview.png
+  - ✏️ sitemap.xml
+- 📁 **src/**
+  - 📁 **components/**
+    - 📁 **arraySearch/**
+      - ✏️ ComparisonMode.jsx
+      - ✏️ Visualizer.jsx
+    - 📁 **operatingSystems/**
+      - ➕ cpuSchedulingAlgorithms.js
+      - ➕ CPUSchedulingPage.jsx
+      - ➕ DiskSchedulingPage.jsx
+      - ✏️ OperatingSystemsPage.jsx
+      - ➕ PageReplacementPage.jsx
+    - 📁 **shortestPathAlgo/**
+      - ✏️ GridVisualizer.jsx
+    - 📁 **slidingwindow/**
+      - ➕ SlidingWindowVisualizer.jsx
+    - 📁 **sortingAlgo/**
+      - ✏️ Visualizer.jsx
+    - 📁 **twoPointer/**
+      - ➕ TwoPointerVisualizer.jsx
+    - ✏️ AlgoCard.jsx
+    - ➕ Favorites.jsx
+    - ✏️ Home.jsx
+    - ✏️ Navbar.jsx
+    - ✏️ SeoHead.jsx
+  - 📁 **lib/**
+    - ➕ favorites.js
+  - ✏️ App.jsx
+  - ✏️ input.css
+  - ✏️ main.jsx
+- ✏️ CHANGELOG.md
+- ✏️ package-lock.json
+- ✏️ package.json
+- ✏️ README.md
+```
 
 ## [1.11.0] - 2026-06-07
 
@@ -1098,3 +1137,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ➕ vite.config.js
 - ➕ yarn.lock
 ```
+
