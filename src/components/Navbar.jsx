@@ -151,7 +151,10 @@ export const Navbar = () => {
   const { pathname } = useLocation()
   const isExploreMenuOpen = hoveredTab === 'explore' || exploreOpen
   const isExploreActive = algorithmLinks.some(
-    (link) => link.href !== '/practice' && link.href !== '/challenge' && pathname.startsWith(link.href)
+    (link) =>
+      link.href !== '/practice' &&
+      link.href !== '/challenge' &&
+      pathname.startsWith(link.href)
   )
 
   const [history, setHistory] = useState(() => {
